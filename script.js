@@ -53,34 +53,101 @@ const Player = (name, symbol) => {
 // CURRENT PLAYER
 // SWITCH TURNS
 // 
+
+/*
+VERTICAL WINS: 3: Make array of size 3
+- [0,0],[1,0],[2,0]='x'||'o' (player1.symbol)||(player2.symbol)
+- [0,1],[1,1],[2,1]='x'||'o' (player1.symbol)||(player2.symbol)
+- [0,2],[1,2],[2,2]='x'||'o' (player1.symbol)||(player2.symbol)
+
+HORIZONTAL WINS: 3: Make array of size 3
+- [0,0],[0,1],[0,2]='x'||'o' (player1.symbol)||(player2.symbol)
+- [1,0],[1,1],[1,2]='x'||'o' (player1.symbol)||(player2.symbol)
+- [2,0],[2,1],[2,2]='x'||'o' (player1.symbol)||(player2.symbol)
+
+DIAGONAL WINS: 2: Make array of size 2
+- [0,0],[1,1],[2,2]='x'||'o' (player1.symbol)||(player2.symbol)
+- [0,2],[1,1],[2,0]='x'||'o' (player1.symbol)||(player2.symbol)
+
+*/
+
+
+
+
+
+
 const Rule = () => {
 
-    currentPlayer=players[0].getName();
-    currentSymbol=players[0].getSymbol();
+    let internalBoard=gameBoard();
 
-    getCurrentPlayer=()=> currentPlayer;
-    getCurrentSymbol=()=>currentSymbol;
-    
 
+    currentPlayer = players[0].getName();
+    currentSymbol = players[0].getSymbol();
+
+    getCurrentPlayer = () => currentPlayer;
+    getCurrentSymbol = () => currentSymbol;
+
+    let verticalWins = [
+        [0, 0],
+        [1, 0],
+        [2, 0],
+
+        [0, 1],
+        [1, 1],
+        [2, 1],
+
+        [0, 2],
+        [1, 2],
+        [2, 2]
+    ];
+    let horizontalWins = [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+
+        [1, 0],
+        [1, 1],
+        [1, 2],
+
+        [2, 0],
+        [2, 1],
+        [2, 2]
+    ];
+    let diagonalWins = [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+
+        [0, 2],
+        [1, 1],
+        [2, 0]
+    ];
 
     const currentTurn = () => {
         console.log("its currently " + getCurrentPlayer() + "'s turn");
     }
 
-    const switchTurn=()=>{
-        if(currentPlayer=players[0].getName()){
+    const switchTurn = () => {
+        if (currentPlayer === players[0].getName()) {
             console.log('TURNS SWITCHED to PLAYER 2');
-            currentPlayer=players[1].getName();
-            currentSymbol=players[1].getSymbol();
+            currentPlayer = players[1].getName();
+            currentSymbol = players[1].getSymbol();
         }
 
         // BUG HERE DOESNT WORK
-        else if(currentPlayer=players[1].getName()){
+        else if (currentPlayer === players[1].getName()) {
             console.log('TURNS SWITCHED to PLAYER 1');
 
-            currentPlayer=players[0].getName();
-            currentSymbol=players[0].getSymbol();
+            currentPlayer = players[0].getName();
+            currentSymbol = players[0].getSymbol();
         }
+    }
+
+
+    // CHECK FOR WIN AFTER 5 TURNS
+    const checkForWin =()=>{
+        
+        console.log(testBoard.getTurnCount());
     }
 
 
@@ -88,7 +155,8 @@ const Rule = () => {
         currentTurn,
         getCurrentPlayer,
         getCurrentSymbol,
-        switchTurn
+        switchTurn,
+        checkForWin
     };
 }
 
@@ -99,8 +167,9 @@ const Rule = () => {
 // MARK BOARD
 // PRINT BOARD
 
-function gameBoard() {
+const gameBoard = () => {
 
+    let turnCount = 0;
     board = [];
     rows = 3;
     columns = 3;
@@ -117,6 +186,7 @@ function gameBoard() {
     // MARK BOARD
     const markBoard = (rows, columns) => {
         board[rows][columns] = getCurrentSymbol();
+        turnCount++;
     }
 
     // EXPORT BOARD
@@ -127,10 +197,13 @@ function gameBoard() {
     const printBoard = () => {
         console.table(board);
     }
+
+    const getTurnCount = () => turnCount;
     return {
         getBoard,
         markBoard,
-        printBoard
+        printBoard,
+        getTurnCount
     };
 }
 
@@ -147,21 +220,20 @@ p2 = Player('player2', 'o');
 players.push(p1, p2);
 
 let testBoard = gameBoard(); //DEFINE THE BOARD
-let testRule=Rule();         //DEFINE THE RULES
+let testRule = Rule(); //DEFINE THE RULES
 
 
 testBoard.printBoard();
 
 testRule.currentTurn();
-testBoard.markBoard(0,1);
-
-testRule.switchTurn();
-testRule.currentTurn();
-
-testBoard.printBoard();
-testBoard.markBoard(0,2);
+testBoard.markBoard(0, 1);
 
 testBoard.printBoard();
 testRule.switchTurn();
-testRule.currentTurn();
 
+testBoard.markBoard(0, 2);
+testBoard.printBoard();
+
+// console.log(testBoard.getTurnCount());
+
+testRule.checkForWin();
