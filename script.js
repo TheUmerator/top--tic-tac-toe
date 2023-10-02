@@ -1,4 +1,3 @@
-
 /*
 HOW THE GAME WILL PLAY OUT(NEEDS UPDATING):
 -Board is layed out, indexes to rows and columns panned
@@ -56,18 +55,40 @@ const Player = (name, symbol) => {
 // 
 const Rule = () => {
 
-    currentPlayer = players[0].getName();
+    currentPlayer=players[0].getName();
+    currentSymbol=players[0].getSymbol();
 
-    const getCurrentPlayer=()=>currentPlayer;
+    getCurrentPlayer=()=> currentPlayer;
+    getCurrentSymbol=()=>currentSymbol;
+    
 
-    const turn = () => {
-        console.log("its currently " + currentPlayer + "'s turn");
+
+    const currentTurn = () => {
+        console.log("its currently " + getCurrentPlayer() + "'s turn");
+    }
+
+    const switchTurn=()=>{
+        if(currentPlayer=players[0].getName()){
+            console.log('TURNS SWITCHED to PLAYER 2');
+            currentPlayer=players[1].getName();
+            currentSymbol=players[1].getSymbol();
+        }
+
+        // BUG HERE DOESNT WORK
+        else if(currentPlayer=players[1].getName()){
+            console.log('TURNS SWITCHED to PLAYER 1');
+
+            currentPlayer=players[0].getName();
+            currentSymbol=players[0].getSymbol();
+        }
     }
 
 
     return {
-        turn,
-        getCurrentPlayer
+        currentTurn,
+        getCurrentPlayer,
+        getCurrentSymbol,
+        switchTurn
     };
 }
 
@@ -78,42 +99,42 @@ const Rule = () => {
 // MARK BOARD
 // PRINT BOARD
 
-function gameBoard(){
+function gameBoard() {
 
-board = [];
-rows = 3;
-columns = 3;
+    board = [];
+    rows = 3;
+    columns = 3;
 
-// CREATE BOARD
-for (i = 0; i < rows; i++) {
-    board[i]=[];
-    for (j = 0; j < columns; j++) {
-        board[i].push(0);
+    // CREATE BOARD
+    for (i = 0; i < rows; i++) {
+        board[i] = [];
+        for (j = 0; j < columns; j++) {
+            board[i].push(0);
+        }
     }
+
+
+    // MARK BOARD
+    const markBoard = (rows, columns) => {
+        board[rows][columns] = getCurrentSymbol();
+    }
+
+    // EXPORT BOARD
+    const getBoard = () => board;
+
+
+    //  PRINT BOARD
+    const printBoard = () => {
+        console.table(board);
+    }
+    return {
+        getBoard,
+        markBoard,
+        printBoard
+    };
 }
 
-
-// MARK BOARD
-const markBoard=(rows,columns)=>{
-    board[rows,columns]=getCurrentPlayer.symbol;
-}
-
-// EXPORT BOARD
- const getBoard=()=>board;
-
-
-//  PRINT BOARD
-const printBoard=()=>{
-    console.log(board);
-}
-return{
-    getBoard,
-    markBoard,
-    printBoard
-};
-}
-
-function Game (){
+function Game() {
 
 }
 
@@ -125,8 +146,22 @@ p2 = Player('player2', 'o');
 
 players.push(p1, p2);
 
-let testBoard=gameBoard();
-let testRule=Rule();
+let testBoard = gameBoard(); //DEFINE THE BOARD
+let testRule=Rule();         //DEFINE THE RULES
 
-// console.log(Rule.getCurrentPlayer());
+
+testBoard.printBoard();
+
+testRule.currentTurn();
+testBoard.markBoard(0,1);
+
+testRule.switchTurn();
+testRule.currentTurn();
+
+testBoard.printBoard();
+testBoard.markBoard(0,2);
+
+testBoard.printBoard();
+testRule.switchTurn();
+testRule.currentTurn();
 
