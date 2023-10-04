@@ -78,7 +78,7 @@ DIAGONAL WINS: 2: Make array of size 2
 
 const Rule = () => {
 
-    let internalBoard=gameBoard();
+    let referenceBoard = gameBoard();
 
 
     currentPlayer = players[0].getName();
@@ -88,40 +88,73 @@ const Rule = () => {
     getCurrentSymbol = () => currentSymbol;
 
     let verticalWins = [
-        [0, 0],
-        [1, 0],
-        [2, 0],
+        [
+            [0, 0],
+            [1, 0],
+            [2, 0]
+        ],
 
-        [0, 1],
-        [1, 1],
-        [2, 1],
+        [
+            [0, 1],
+            [1, 1],
+            [2, 1]
+        ],
 
-        [0, 2],
-        [1, 2],
-        [2, 2]
+        [
+            [0, 2],
+            [1, 2],
+            [2, 2]
+        ]
     ];
     let horizontalWins = [
-        [0, 0],
-        [0, 1],
-        [0, 2],
+        [
+            [0, 0],
+            [0, 1],
+            [0, 2]
+        ],
 
-        [1, 0],
-        [1, 1],
-        [1, 2],
+        [
+            [1, 0],
+            [1, 1],
+            [1, 2]
+        ],
 
-        [2, 0],
-        [2, 1],
-        [2, 2]
+        [
+            [2, 0],
+            [2, 1],
+            [2, 2]
+        ]
     ];
     let diagonalWins = [
-        [0, 0],
-        [1, 1],
-        [2, 2],
+        [
+            [0, 0],
+            [1, 1],
+            [2, 2]
+        ],
 
-        [0, 2],
-        [1, 1],
-        [2, 0]
+        [
+            [0, 2],
+            [1, 1],
+            [2, 0]
+        ]
     ];
+
+    function fillReferenceBoard(anyWins) {
+        for (i = 0; i < anyWins.length; i++) {
+            
+            console.log('INDEX ' + i);
+            for (j = 0; j < anyWins[i].length; j++) {
+                // console.log(verticalWins[i][j]);
+                referenceBoard.markBoard(anyWins[i][j][0], anyWins[i][j][1]);
+                referenceBoard.printBoard();
+            }
+            console.log('END OF ONE WIN CONDITION');
+            // THIS IS WHERE YOU CHECK IF EITHER WIN CONDITION OF YOUR TEST BOARD IS 
+            // EQUAL TO EITHER OF YOUR REFERENCE BOARD VALUES
+
+        }
+        // return anyWins;
+    }
 
     const currentTurn = () => {
         console.log("its currently " + getCurrentPlayer() + "'s turn");
@@ -145,13 +178,49 @@ const Rule = () => {
 
 
     // CHECK FOR WIN AFTER 5 TURNS
-    const checkForWin =()=>{
+    const checkForWin = () => {
+
+        referenceBoard.printBoard();
+
+        // {
+        //     referenceBoard.markBoard(,);
+        // }
+        // console.log(verticalWins[0].length)
+        // console.log(verticalWins[0][0].length)
+
+        fillReferenceBoard(verticalWins);
+        // for(i=0;i<verticalWins.length;i++)
+        // {
+        //     console.log('INDEX '+i);
+        //     for(j=0;j<verticalWins[i].length;j++)
+        //     {
+        //         // console.log(verticalWins[i][j]);
+        //         referenceBoard.markBoard(verticalWins[i][j][0],verticalWins[i][j][1]);
+        //         referenceBoard.printBoard();
+        //     }
+        // }
+
+
+
+        // console.log(verticalWins[1][0][0])
+        // console.log(verticalWins[0][0]);
+        // console.log(testBoard.getBoard()[verticalWins[0][0]]);
+        // console.log(verticalWins[0]);
+        // if (testBoard.getTurnCount() == 5) {
+
+        //     console.log('time to check for win');
+        // }
+    }
+
+    testFunc=()=>{
+        console.log(referenceBoard.getValueAt(0,1))
+
         
-        console.log(testBoard.getTurnCount());
     }
 
 
     return {
+        testFunc,
         currentTurn,
         getCurrentPlayer,
         getCurrentSymbol,
@@ -198,12 +267,17 @@ const gameBoard = () => {
         console.table(board);
     }
 
+    function getValueAt(row,column){
+        return board[row][column];
+    }
+
     const getTurnCount = () => turnCount;
     return {
         getBoard,
         markBoard,
         printBoard,
-        getTurnCount
+        getTurnCount,
+        getValueAt
     };
 }
 
@@ -223,17 +297,18 @@ let testBoard = gameBoard(); //DEFINE THE BOARD
 let testRule = Rule(); //DEFINE THE RULES
 
 
-testBoard.printBoard();
+// testBoard.printBoard();
 
-testRule.currentTurn();
-testBoard.markBoard(0, 1);
+// testRule.currentTurn();
+// testBoard.markBoard(0, 1);
 
-testBoard.printBoard();
-testRule.switchTurn();
+// testBoard.printBoard();
+// testRule.switchTurn();
 
-testBoard.markBoard(0, 2);
-testBoard.printBoard();
+// testBoard.markBoard(0, 2);
+// testBoard.printBoard();
 
 // console.log(testBoard.getTurnCount());
 
 testRule.checkForWin();
+testRule.testFunc();
