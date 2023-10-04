@@ -125,6 +125,7 @@ const Rule = () => {
             [2, 2]
         ]
     ];
+    // diagonalWins[winPattern][patternIndexNumber][patternIndexValue]
     let diagonalWins = [
         [
             [0, 0],
@@ -138,10 +139,12 @@ const Rule = () => {
             [2, 0]
         ]
     ];
+    // wins[winType][winPattern][patternIndexNumber][patternIndexValue]
+    let wins = [verticalWins, horizontalWins, diagonalWins];
 
     function fillReferenceBoard(anyWins) {
         for (i = 0; i < anyWins.length; i++) {
-            
+
             console.log('INDEX ' + i);
             for (j = 0; j < anyWins[i].length; j++) {
                 // console.log(verticalWins[i][j]);
@@ -212,10 +215,51 @@ const Rule = () => {
         // }
     }
 
-    testFunc=()=>{
-        console.log(referenceBoard.getValueAt(0,1))
+    testFunc = () => {
+        // console.log(referenceBoard.getValueAt(0,1))
 
-        
+        // if (testBoard.getValueAt(verticalWins[0][0][0], verticalWins[0][0][1]) == currentSymbol) {
+        //     console.log("VERTICAL 1");
+        // }
+        // if (testBoard.getValueAt(verticalWins[0][1][0], verticalWins[0][1][1]) == currentSymbol) {
+        //     console.log("VERTICAL 2");
+        // }
+        // if (testBoard.getValueAt(verticalWins[0][2][0], verticalWins[0][2][1]) == currentSymbol) {
+        //     console.log("VERTICAL 3");
+        // }
+
+        for (winType in wins) {
+            let typeName = '';
+
+            if(winType==0)
+            typeName='VERTICAL';
+            else if(winType==1)
+            typeName="HORIZONTAL";
+            else if(winType==2)
+            typeName="DIAGONAL";
+
+            console.log(typeName);
+
+
+            // for (i = 0; i < 3; i++) {
+            for (i = 0; i<wins[winType].length; i++) {
+            
+                let matchCount = 0;
+                // for (j = 0; j < 3; j++) {
+                for (j = 0; j<wins[winType][i].length; j++) {
+                
+                    if ((testBoard.getValueAt(wins[winType][i][j][0], wins[winType][i][j][1]) == currentSymbol)) {
+                        matchCount++;
+                    }
+                    console.log(typeName+' MATCHING WIN POSITIONS OF PATTERN '+ i+' ARE: ' + matchCount);
+
+                    if(matchCount==3){
+                        console.log('----------WIN FOUND----------');
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -267,7 +311,7 @@ const gameBoard = () => {
         console.table(board);
     }
 
-    function getValueAt(row,column){
+    function getValueAt(row, column) {
         return board[row][column];
     }
 
@@ -296,19 +340,14 @@ players.push(p1, p2);
 let testBoard = gameBoard(); //DEFINE THE BOARD
 let testRule = Rule(); //DEFINE THE RULES
 
+testBoard.printBoard();
+testRule.currentTurn();
 
-// testBoard.printBoard();
+testBoard.markBoard(0, 0);
+testBoard.printBoard();
+testBoard.markBoard(1, 0);
+testBoard.printBoard();
+testBoard.markBoard(2, 0);
+testBoard.printBoard();
 
-// testRule.currentTurn();
-// testBoard.markBoard(0, 1);
-
-// testBoard.printBoard();
-// testRule.switchTurn();
-
-// testBoard.markBoard(0, 2);
-// testBoard.printBoard();
-
-// console.log(testBoard.getTurnCount());
-
-testRule.checkForWin();
 testRule.testFunc();
