@@ -76,13 +76,11 @@ DIAGONAL WINS: 2: Make array of size 2
 
 
 
-const Rule = () => {
-
-    let referenceBoard = gameBoard();
-
-
-    currentPlayer = players[0].getName();
-    currentSymbol = players[0].getSymbol();
+const Rule = (onePlayerObject,anotherPlayerObject) => {
+    // currentPlayer = players[0].getName();
+    // currentSymbol = players[0].getSymbol();
+    currentPlayer = onePlayerObject.getName();
+    currentSymbol = onePlayerObject.getSymbol();
 
     getCurrentPlayer = () => currentPlayer;
     getCurrentSymbol = () => currentSymbol;
@@ -164,18 +162,18 @@ const Rule = () => {
     }
 
     const switchTurn = () => {
-        if (currentPlayer === players[0].getName()) {
+        if (currentPlayer === onePlayerObject.getName()) {
             console.log('TURNS SWITCHED to PLAYER 2');
-            currentPlayer = players[1].getName();
-            currentSymbol = players[1].getSymbol();
+            currentPlayer = anotherPlayerObject.getName();
+            currentSymbol = anotherPlayerObject.getSymbol();
         }
 
         // BUG HERE DOESNT WORK
-        else if (currentPlayer === players[1].getName()) {
+        else if (currentPlayer === anotherPlayerObject.getName()) {
             console.log('TURNS SWITCHED to PLAYER 1');
 
-            currentPlayer = players[0].getName();
-            currentSymbol = players[0].getSymbol();
+            currentPlayer = onePlayerObject.getName();
+            currentSymbol = onePlayerObject.getSymbol();
         }
     }
 
@@ -183,78 +181,36 @@ const Rule = () => {
     // CHECK FOR WIN AFTER 5 TURNS
     const checkForWin = () => {
 
-        referenceBoard.printBoard();
-
-        // {
-        //     referenceBoard.markBoard(,);
-        // }
-        // console.log(verticalWins[0].length)
-        // console.log(verticalWins[0][0].length)
-
-        fillReferenceBoard(verticalWins);
-        // for(i=0;i<verticalWins.length;i++)
-        // {
-        //     console.log('INDEX '+i);
-        //     for(j=0;j<verticalWins[i].length;j++)
-        //     {
-        //         // console.log(verticalWins[i][j]);
-        //         referenceBoard.markBoard(verticalWins[i][j][0],verticalWins[i][j][1]);
-        //         referenceBoard.printBoard();
-        //     }
-        // }
-
-
-
-        // console.log(verticalWins[1][0][0])
-        // console.log(verticalWins[0][0]);
-        // console.log(testBoard.getBoard()[verticalWins[0][0]]);
-        // console.log(verticalWins[0]);
-        // if (testBoard.getTurnCount() == 5) {
-
-        //     console.log('time to check for win');
-        // }
     }
 
     testFunc = () => {
-        // console.log(referenceBoard.getValueAt(0,1))
-
-        // if (testBoard.getValueAt(verticalWins[0][0][0], verticalWins[0][0][1]) == currentSymbol) {
-        //     console.log("VERTICAL 1");
-        // }
-        // if (testBoard.getValueAt(verticalWins[0][1][0], verticalWins[0][1][1]) == currentSymbol) {
-        //     console.log("VERTICAL 2");
-        // }
-        // if (testBoard.getValueAt(verticalWins[0][2][0], verticalWins[0][2][1]) == currentSymbol) {
-        //     console.log("VERTICAL 3");
-        // }
-
         for (winType in wins) {
             let typeName = '';
 
-            if(winType==0)
-            typeName='VERTICAL';
-            else if(winType==1)
-            typeName="HORIZONTAL";
-            else if(winType==2)
-            typeName="DIAGONAL";
+            if (winType == 0)
+                typeName = 'VERTICAL';
+            else if (winType == 1)
+                typeName = "HORIZONTAL";
+            else if (winType == 2)
+                typeName = "DIAGONAL";
 
             console.log(typeName);
 
 
-            // for (i = 0; i < 3; i++) {
-            for (i = 0; i<wins[winType].length; i++) {
-            
+            for (i = 0; i < wins[winType].length; i++) {
+
                 let matchCount = 0;
-                // for (j = 0; j < 3; j++) {
-                for (j = 0; j<wins[winType][i].length; j++) {
-                
+                for (j = 0; j < wins[winType][i].length; j++) {
+
                     if ((testBoard.getValueAt(wins[winType][i][j][0], wins[winType][i][j][1]) == currentSymbol)) {
                         matchCount++;
                     }
-                    console.log(typeName+' MATCHING WIN POSITIONS OF PATTERN '+ i+' ARE: ' + matchCount);
-
-                    if(matchCount==3){
-                        console.log('----------WIN FOUND----------');
+                    if (matchCount > 0) {
+                        console.log(typeName + ' MATCHING WIN POSITIONS OF PATTERN ' + i + ' ARE: ' + matchCount);
+                    }
+                    if (matchCount == 3) {
+                        // console.log('----------WIN FOUND----------');
+                        console.log(currentPlayer + ' WINS')
                     }
                 }
             }
@@ -325,29 +281,97 @@ const gameBoard = () => {
     };
 }
 
-function Game() {
+const Game = () => {
+    // let players = []; //NOT DEFINED IN RULE AND GAME
+
+    p1 = Player('player1', 'x');
+    p2 = Player('player2', 'o');
+
+    // players.push(p1, p2);
+
+    let testBoard = gameBoard(); //DEFINE THE BOARD
+    let testRule = Rule(p1,p2); //DEFINE THE RULES
+
+
+    // VERTICAL WIN CONDITION FOR x
+    testBoard.printBoard();
+    testRule.currentTurn();
+    testBoard.markBoard(0, 0);
+
+    testBoard.printBoard();
+    testRule.switchTurn();
+
+
+    testRule.currentTurn();
+    testBoard.markBoard(0, 2);
+
+    testBoard.printBoard();
+    testRule.switchTurn();
+
+
+    testRule.currentTurn();
+    testBoard.markBoard(1, 0);
+
+    testBoard.printBoard();
+    testRule.switchTurn();
+
+
+    testRule.currentTurn();
+    testBoard.markBoard(1, 1);
+
+    testBoard.printBoard();
+    testRule.switchTurn();
+
+
+    testRule.currentTurn();
+    testBoard.markBoard(2, 0);
+
+    testBoard.printBoard();
+
+    testRule.testFunc();
+
+    // VERTICAL WIN CONDITION FOR O
+    // testRule.switchTurn();
+    // testBoard.printBoard();
+    // testRule.currentTurn();
+    // testBoard.markBoard(0,0);
+
+    // testBoard.printBoard();
+    // testRule.switchTurn();
+
+
+    // testRule.currentTurn();
+    // testBoard.markBoard(0,2);
+
+    // testBoard.printBoard();
+    // testRule.switchTurn();
+
+
+    // testRule.currentTurn();
+    // testBoard.markBoard(1,0);
+
+    // testBoard.printBoard();
+    // testRule.switchTurn();
+
+
+    // testRule.currentTurn();
+    // testBoard.markBoard(1,1);
+
+    // testBoard.printBoard();
+    // testRule.switchTurn();
+
+
+    // testRule.currentTurn();
+    // testBoard.markBoard(2,0);
+
+    // testBoard.printBoard();
+
+    // testRule.testFunc();
+
+    return {
+        players
+    };
 
 }
-
-// THIS WILL BE WRAPPED IN A FUNCTION Game IN THE END---------------------
 // GLOBAL SCOPE
-let players = [];
-p1 = Player('player1', 'x');
-p2 = Player('player2', 'o');
-
-players.push(p1, p2);
-
-let testBoard = gameBoard(); //DEFINE THE BOARD
-let testRule = Rule(); //DEFINE THE RULES
-
-testBoard.printBoard();
-testRule.currentTurn();
-
-testBoard.markBoard(0, 0);
-testBoard.printBoard();
-testBoard.markBoard(1, 0);
-testBoard.printBoard();
-testBoard.markBoard(2, 0);
-testBoard.printBoard();
-
-testRule.testFunc();
+Game();
