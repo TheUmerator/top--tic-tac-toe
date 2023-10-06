@@ -76,7 +76,7 @@ DIAGONAL WINS: 2: Make array of size 2
 
 
 
-const Rule = (onePlayerObject,anotherPlayerObject) => {
+const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
     // currentPlayer = players[0].getName();
     // currentSymbol = players[0].getSymbol();
     currentPlayer = onePlayerObject.getName();
@@ -180,10 +180,6 @@ const Rule = (onePlayerObject,anotherPlayerObject) => {
 
     // CHECK FOR WIN AFTER 5 TURNS
     const checkForWin = () => {
-
-    }
-
-    testFunc = () => {
         for (winType in wins) {
             let typeName = '';
 
@@ -210,7 +206,8 @@ const Rule = (onePlayerObject,anotherPlayerObject) => {
                     }
                     if (matchCount == 3) {
                         // console.log('----------WIN FOUND----------');
-                        console.log(currentPlayer + ' WINS')
+                        console.log(currentPlayer + ' WINS');
+                        return;
                     }
                 }
             }
@@ -218,9 +215,45 @@ const Rule = (onePlayerObject,anotherPlayerObject) => {
 
     }
 
+    // testFunc = () => {
+    //     for (winType in wins) {
+    //         let typeName = '';
+
+    //         if (winType == 0)
+    //             typeName = 'VERTICAL';
+    //         else if (winType == 1)
+    //             typeName = "HORIZONTAL";
+    //         else if (winType == 2)
+    //             typeName = "DIAGONAL";
+
+    //         console.log(typeName);
+
+
+    //         for (i = 0; i < wins[winType].length; i++) {
+
+    //             let matchCount = 0;
+    //             for (j = 0; j < wins[winType][i].length; j++) {
+
+    //                 if ((testBoard.getValueAt(wins[winType][i][j][0], wins[winType][i][j][1]) == currentSymbol)) {
+    //                     matchCount++;
+    //                 }
+    //                 if (matchCount > 0) {
+    //                     console.log(typeName + ' MATCHING WIN POSITIONS OF PATTERN ' + i + ' ARE: ' + matchCount);
+    //                 }
+    //                 if (matchCount == 3) {
+    //                     // console.log('----------WIN FOUND----------');
+    //                     console.log(currentPlayer + ' WINS');
+    //                     return;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    // }
+
 
     return {
-        testFunc,
+        // testFunc,
         currentTurn,
         getCurrentPlayer,
         getCurrentSymbol,
@@ -290,45 +323,71 @@ const Game = () => {
     // players.push(p1, p2);
 
     let testBoard = gameBoard(); //DEFINE THE BOARD
-    let testRule = Rule(p1,p2); //DEFINE THE RULES
+    let testRule = Rule(p1, p2, testBoard); //DEFINE THE RULES
+
+    const playRound = (row, column) => {
+        testBoard.printBoard();
+        testRule.currentTurn();
+
+        if (testBoard.getValueAt(row, column) != 0) {
+            console.log('Space already marked! Try a different space.');
+            testBoard.printBoard();
+            testRule.currentTurn();
+
+            return;
+        }
+
+        testBoard.markBoard(row, column);
+
+        // THIS IS WHERE TO CHECK FOR WIN
+        console.log('current turnCount: ' + testBoard.getTurnCount());
+        testBoard.printBoard();
+
+        if (testBoard.getTurnCount() == 5) {
+            testRule.checkForWin();
+            return;
+        }
+
+        testRule.switchTurn();
+    }
 
 
     // VERTICAL WIN CONDITION FOR x
-    testBoard.printBoard();
-    testRule.currentTurn();
-    testBoard.markBoard(0, 0);
+    // testBoard.printBoard();
+    // testRule.currentTurn();
+    // testBoard.markBoard(0, 0);
 
-    testBoard.printBoard();
-    testRule.switchTurn();
-
-
-    testRule.currentTurn();
-    testBoard.markBoard(0, 2);
-
-    testBoard.printBoard();
-    testRule.switchTurn();
+    // testBoard.printBoard();
+    // testRule.switchTurn();
 
 
-    testRule.currentTurn();
-    testBoard.markBoard(1, 0);
+    // testRule.currentTurn();
+    // testBoard.markBoard(0, 2);
 
-    testBoard.printBoard();
-    testRule.switchTurn();
-
-
-    testRule.currentTurn();
-    testBoard.markBoard(1, 1);
-
-    testBoard.printBoard();
-    testRule.switchTurn();
+    // testBoard.printBoard();
+    // testRule.switchTurn();
 
 
-    testRule.currentTurn();
-    testBoard.markBoard(2, 0);
+    // testRule.currentTurn();
+    // testBoard.markBoard(1, 0);
 
-    testBoard.printBoard();
+    // testBoard.printBoard();
+    // testRule.switchTurn();
 
-    testRule.testFunc();
+
+    // testRule.currentTurn();
+    // testBoard.markBoard(1, 1);
+
+    // testBoard.printBoard();
+    // testRule.switchTurn();
+
+
+    // testRule.currentTurn();
+    // testBoard.markBoard(2, 0);
+
+    // testBoard.printBoard();
+
+    // testRule.testFunc();
 
     // VERTICAL WIN CONDITION FOR O
     // testRule.switchTurn();
@@ -369,9 +428,16 @@ const Game = () => {
     // testRule.testFunc();
 
     return {
-        players
+        playRound
     };
 
 }
 // GLOBAL SCOPE
-Game();
+testGame = Game();
+
+testGame.playRound(0, 0);
+testGame.playRound(1, 0);
+// testGame.playRound(0,1);
+// testGame.playRound(1,1);
+// testGame.playRound(0,2);
+testGame.playRound(1, 0);
