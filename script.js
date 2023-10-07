@@ -291,7 +291,7 @@ const Game = () => {
         console.log('current turnCount: ' + testBoard.getTurnCount());
         testBoard.printBoard();
 
-        if (testBoard.getTurnCount() == 5) {
+        if (testBoard.getTurnCount() >= 5) {
             testRule.checkForWin();
             return;
         }
@@ -335,7 +335,26 @@ const displayScreen = () => {
         }
     }
 
-    // 
+    //print out row and column positioning for every button click
+    const buttons=document.querySelectorAll('button'); 
+    buttons.forEach((button)=>{                 
+        button.addEventListener('click',()=>{
+            // TARGETTING CELLS
+            if(button.classList.contains('cell')){
+                console.log('CELL SELECTED');
+                rowIndex=button.classList[1].substring(4,5); //EXTRACT ROW INDEX NUMBER
+                colIndex=button.classList[2].substring(7,8);
+
+                console.log('ROW: '+rowIndex);
+                console.log('COLUMN: '+colIndex);
+
+                testGame.playRound(rowIndex,colIndex);
+                // console.log(''+button.classList[1].substring(4,5));    
+                // console.log(''+button.classList[2].substring(7,8));    
+            }
+            // TARGETING RESET GAME
+        })
+    })
 }
 // GLOBAL SCOPE
 
