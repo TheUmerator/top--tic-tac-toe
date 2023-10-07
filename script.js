@@ -201,6 +201,11 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
                         console.log(currentPlayer + ' WINS');
                         return true;
                     }
+                    if (matchCount != 3 && testBoard.getTurnCount() == 9) {
+                        console.log('DRAW');
+                        return false;
+                    }
+
                 }
             }
         }
@@ -295,6 +300,8 @@ const Game = () => {
             testRule.checkForWin();
 
             if (testRule.checkForWin() == true)
+                return;
+            if (testRule.checkForWin() == false)
                 return;
         }
 
