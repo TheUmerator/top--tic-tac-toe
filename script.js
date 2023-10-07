@@ -294,8 +294,8 @@ const Game = () => {
         if (testBoard.getTurnCount() >= 5) {
             testRule.checkForWin();
 
-            if(testRule.checkForWin()==true)
-            return;
+            if (testRule.checkForWin() == true)
+                return;
         }
 
         testRule.switchTurn();
@@ -323,42 +323,40 @@ const displayScreen = () => {
     const board = testGame.getBoard();
 
     const currentPlayer = testGame.getCurrentPlayer();
-     currentSymbol=testGame.getCurrentSymbol();
+    currentSymbol = testGame.getCurrentSymbol();
     // Lets just create our board first
 
-    for (i=0;i<3;i++) {
-        for (j=0;j<3;j++) {
-            const cell=document.createElement('button');
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            const cell = document.createElement('button');
             cell.classList.add('cell');
-            cell.classList.add('row-'+i);
-            cell.classList.add('column-'+j);
+            cell.classList.add('row-' + i);
+            cell.classList.add('column-' + j);
             displayBoard.appendChild(cell);
         }
     }
 
     // WRITE ONTO THE BOARD WHEN THE PLAYER MARKS IT
-    const writeBoard=(row,column)=>{
+    const writeBoard = (row, column) => {
         // const currentSymbol=testGame.getCurrentSymbol();
-        const selectedCell=document.querySelector('.row-'+row+'.column-'+column);
-        selectedCell.classList.add('marked');
-        selectedCell.textContent=currentSymbol;
+        const selectedCell = document.querySelector('.row-' + row + '.column-' + column);
+        if (selectedCell.textContent == '') {
+            selectedCell.classList.add('marked');
+            selectedCell.textContent = currentSymbol;
+        }
     }
     //print out row and column positioning for every button click
-    const buttons=document.querySelectorAll('button'); 
-    buttons.forEach((button)=>{                 
-        button.addEventListener('click',()=>{
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button) => {
+        button.addEventListener('click', () => {
             // TARGETTING CELLS
-            if(button.classList.contains('cell')){
+            if (button.classList.contains('cell')) {
                 console.log('CELL SELECTED');
-                rowIndex=button.classList[1].substring(4,5);    //EXTRACT ROW INDEX NUMBER
-                colIndex=button.classList[2].substring(7,8);    //EXTRACT COLUMN INDEX NUMBER
+                rowIndex = button.classList[1].substring(4, 5); //EXTRACT ROW INDEX NUMBER
+                colIndex = button.classList[2].substring(7, 8); //EXTRACT COLUMN INDEX NUMBER
 
-                // console.log('ROW: '+rowIndex);
-                // console.log('COLUMN: '+colIndex);
-                writeBoard(rowIndex,colIndex); 
-                testGame.playRound(rowIndex,colIndex);
- 
-
+                writeBoard(rowIndex, colIndex);
+                testGame.playRound(rowIndex, colIndex);
             }
             // TARGETING RESET GAME
         })
