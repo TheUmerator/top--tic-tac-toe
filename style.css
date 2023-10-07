@@ -15,7 +15,7 @@ body{
 
     display: grid;
 
-    grid-template-rows: 9fr 1fr;
+    grid-template-rows: 8fr 1fr 1fr;
 }
 .board{
     /* background-color: blue; */

@@ -258,12 +258,23 @@ const gameBoard = () => {
     }
 
     const getTurnCount = () => turnCount;
+
+    const clearBoard=()=>{
+        for (i = 0; i < rows; i++) {
+            board[i] = [];
+            for (j = 0; j < columns; j++) {
+                board[i].push(0);
+            }
+        }
+        turnCount=0;
+    }
     return {
         getBoard,
         markBoard,
         printBoard,
         getTurnCount,
-        getValueAt
+        getValueAt,
+        clearBoard
     };
 }
 
@@ -314,7 +325,8 @@ const Game = () => {
         currentTurn: testRule.currentTurn, //might not need this
         getCurrentPlayer: testRule.getCurrentPlayer,
         getCurrentSymbol: testRule.getCurrentSymbol,
-        getBoard: testBoard.getBoard
+        getBoard: testBoard.getBoard,
+        clearBoard: testBoard.clearBoard
 
     };
 
@@ -364,6 +376,18 @@ const displayScreen = () => {
 
                 writeBoard(rowIndex, colIndex);
                 testGame.playRound(rowIndex, colIndex);
+            }
+            else if(button.classList.contains('reset')){
+                console.log('RESET GAME');
+                testGame.clearBoard();
+                allCells=document.querySelectorAll('.cell');
+                allCells.forEach(cell=>{
+                    cell.textContent='';
+                })
+                
+            }
+            else if(button.classList.contains('new')){
+                console.log('NEW GAME');
             }
             // TARGETING RESET GAME
         })
