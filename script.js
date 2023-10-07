@@ -49,11 +49,6 @@ const Player = (name, symbol) => {
 };
 
 
-// FACTORY FUNCTION FOR MAKING RULES:
-// CURRENT PLAYER
-// SWITCH TURNS
-// 
-
 /*
 VERTICAL WINS: 3: Make array of size 3
 - [0,0],[1,0],[2,0]='x'||'o' (player1.symbol)||(player2.symbol)
@@ -70,9 +65,6 @@ DIAGONAL WINS: 2: Make array of size 2
 - [0,2],[1,1],[2,0]='x'||'o' (player1.symbol)||(player2.symbol)
 
 */
-
-
-
 
 
 
@@ -215,45 +207,7 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
 
     }
 
-    // testFunc = () => {
-    //     for (winType in wins) {
-    //         let typeName = '';
-
-    //         if (winType == 0)
-    //             typeName = 'VERTICAL';
-    //         else if (winType == 1)
-    //             typeName = "HORIZONTAL";
-    //         else if (winType == 2)
-    //             typeName = "DIAGONAL";
-
-    //         console.log(typeName);
-
-
-    //         for (i = 0; i < wins[winType].length; i++) {
-
-    //             let matchCount = 0;
-    //             for (j = 0; j < wins[winType][i].length; j++) {
-
-    //                 if ((testBoard.getValueAt(wins[winType][i][j][0], wins[winType][i][j][1]) == currentSymbol)) {
-    //                     matchCount++;
-    //                 }
-    //                 if (matchCount > 0) {
-    //                     console.log(typeName + ' MATCHING WIN POSITIONS OF PATTERN ' + i + ' ARE: ' + matchCount);
-    //                 }
-    //                 if (matchCount == 3) {
-    //                     // console.log('----------WIN FOUND----------');
-    //                     console.log(currentPlayer + ' WINS');
-    //                     return;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    // }
-
-
     return {
-        // testFunc,
         currentTurn,
         getCurrentPlayer,
         getCurrentSymbol,
@@ -262,12 +216,6 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
     };
 }
 
-
-// NORMAL FUNCTION OR FACTORY FUNCTION?
-// CREATE BOARD
-// EXPORT BOARD
-// MARK BOARD
-// PRINT BOARD
 
 const gameBoard = () => {
 
@@ -350,94 +298,45 @@ const Game = () => {
 
         testRule.switchTurn();
     }
-
-
-    // VERTICAL WIN CONDITION FOR x
-    // testBoard.printBoard();
-    // testRule.currentTurn();
-    // testBoard.markBoard(0, 0);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(0, 2);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(1, 0);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(1, 1);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(2, 0);
-
-    // testBoard.printBoard();
-
-    // testRule.testFunc();
-
-    // VERTICAL WIN CONDITION FOR O
-    // testRule.switchTurn();
-    // testBoard.printBoard();
-    // testRule.currentTurn();
-    // testBoard.markBoard(0,0);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(0,2);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(1,0);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(1,1);
-
-    // testBoard.printBoard();
-    // testRule.switchTurn();
-
-
-    // testRule.currentTurn();
-    // testBoard.markBoard(2,0);
-
-    // testBoard.printBoard();
-
-    // testRule.testFunc();
-
     return {
-        playRound
+        playRound,
+        currentTurn: testRule.currentTurn, //might not need this
+        getCurrentPlayer: testRule.getCurrentPlayer,
+        getBoard: testBoard.getBoard
+
     };
 
 }
-// GLOBAL SCOPE
-testGame = Game();
 
-testGame.playRound(0, 0);
-testGame.playRound(1, 0);
-// testGame.playRound(0,1);
-// testGame.playRound(1,1);
-// testGame.playRound(0,2);
-testGame.playRound(1, 0);
+const displayScreen = () => {
+    testGame = Game();
+
+    // testGame.playRound(0, 0);
+    // testGame.playRound(1, 0);
+    // // testGame.playRound(0,1);
+    // // testGame.playRound(1,1);
+    // // testGame.playRound(0,2);
+    // testGame.playRound(1, 0);
+
+    const displayBoard = document.querySelector('.board');
+    const displayTurn = document.querySelector('.turn');
+    const board = testGame.getBoard();
+    const currentPlayer = testGame.getCurrentPlayer();
+
+    // Lets just create our board first
+
+    for (i=0;i<3;i++) {
+        for (j=0;j<3;j++) {
+            const cell=document.createElement('button');
+            cell.classList.add('cell');
+            cell.classList.add('row-'+i);
+            cell.classList.add('column-'+j);
+            displayBoard.appendChild(cell);
+        }
+    }
+
+    // 
+}
+// GLOBAL SCOPE
+
+displayScreen();
