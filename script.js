@@ -182,7 +182,7 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
             else if (winType == 2)
                 typeName = "DIAGONAL";
 
-            console.log(typeName);
+            // console.log(typeName);
 
 
             for (i = 0; i < wins[winType].length; i++) {
@@ -194,12 +194,12 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
                         matchCount++;
                     }
                     if (matchCount > 0) {
-                        console.log(typeName + ' MATCHING WIN POSITIONS OF PATTERN ' + i + ' ARE: ' + matchCount);
+                        // console.log(typeName + ' MATCHING WIN POSITIONS OF PATTERN ' + i + ' ARE: ' + matchCount);
                     }
                     if (matchCount == 3) {
                         // console.log('----------WIN FOUND----------');
                         console.log(currentPlayer + ' WINS');
-                        return;
+                        return true;
                     }
                 }
             }
@@ -293,15 +293,20 @@ const Game = () => {
 
         if (testBoard.getTurnCount() >= 5) {
             testRule.checkForWin();
+
+            if(testRule.checkForWin()==true)
             return;
         }
 
         testRule.switchTurn();
+        testRule.currentTurn();
+
     }
     return {
         playRound,
         currentTurn: testRule.currentTurn, //might not need this
         getCurrentPlayer: testRule.getCurrentPlayer,
+        getCurrentSymbol: testRule.getCurrentSymbol,
         getBoard: testBoard.getBoard
 
     };
@@ -311,18 +316,14 @@ const Game = () => {
 const displayScreen = () => {
     testGame = Game();
 
-    // testGame.playRound(0, 0);
-    // testGame.playRound(1, 0);
-    // // testGame.playRound(0,1);
-    // // testGame.playRound(1,1);
-    // // testGame.playRound(0,2);
-    // testGame.playRound(1, 0);
 
     const displayBoard = document.querySelector('.board');
     const displayTurn = document.querySelector('.turn');
-    const board = testGame.getBoard();
-    const currentPlayer = testGame.getCurrentPlayer();
 
+    const board = testGame.getBoard();
+
+    const currentPlayer = testGame.getCurrentPlayer();
+     currentSymbol=testGame.getCurrentSymbol();
     // Lets just create our board first
 
     for (i=0;i<3;i++) {
@@ -335,6 +336,13 @@ const displayScreen = () => {
         }
     }
 
+    // WRITE ONTO THE BOARD WHEN THE PLAYER MARKS IT
+    const writeBoard=(row,column)=>{
+        // const currentSymbol=testGame.getCurrentSymbol();
+        const selectedCell=document.querySelector('.row-'+row+'.column-'+column);
+        selectedCell.classList.add('marked');
+        selectedCell.textContent=currentSymbol;
+    }
     //print out row and column positioning for every button click
     const buttons=document.querySelectorAll('button'); 
     buttons.forEach((button)=>{                 
@@ -342,15 +350,15 @@ const displayScreen = () => {
             // TARGETTING CELLS
             if(button.classList.contains('cell')){
                 console.log('CELL SELECTED');
-                rowIndex=button.classList[1].substring(4,5); //EXTRACT ROW INDEX NUMBER
-                colIndex=button.classList[2].substring(7,8);
+                rowIndex=button.classList[1].substring(4,5);    //EXTRACT ROW INDEX NUMBER
+                colIndex=button.classList[2].substring(7,8);    //EXTRACT COLUMN INDEX NUMBER
 
-                console.log('ROW: '+rowIndex);
-                console.log('COLUMN: '+colIndex);
-
+                // console.log('ROW: '+rowIndex);
+                // console.log('COLUMN: '+colIndex);
+                writeBoard(rowIndex,colIndex); 
                 testGame.playRound(rowIndex,colIndex);
-                // console.log(''+button.classList[1].substring(4,5));    
-                // console.log(''+button.classList[2].substring(7,8));    
+ 
+
             }
             // TARGETING RESET GAME
         })
