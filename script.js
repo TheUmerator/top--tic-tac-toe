@@ -77,6 +77,7 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
     getCurrentPlayer = () => currentPlayer;
     getCurrentSymbol = () => currentSymbol;
 
+
     let verticalWins = [
         [
             [0, 0],
@@ -132,23 +133,6 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
     // wins[winType][winPattern][patternIndexNumber][patternIndexValue]
     let wins = [verticalWins, horizontalWins, diagonalWins];
 
-    function fillReferenceBoard(anyWins) {
-        for (i = 0; i < anyWins.length; i++) {
-
-            console.log('INDEX ' + i);
-            for (j = 0; j < anyWins[i].length; j++) {
-                // console.log(verticalWins[i][j]);
-                referenceBoard.markBoard(anyWins[i][j][0], anyWins[i][j][1]);
-                referenceBoard.printBoard();
-            }
-            console.log('END OF ONE WIN CONDITION');
-            // THIS IS WHERE YOU CHECK IF EITHER WIN CONDITION OF YOUR TEST BOARD IS 
-            // EQUAL TO EITHER OF YOUR REFERENCE BOARD VALUES
-
-        }
-        // return anyWins;
-    }
-
     const currentTurn = () => {
         console.log("its currently " + getCurrentPlayer() + "'s turn");
     }
@@ -169,9 +153,11 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
         }
     }
 
-
+    let winState = false;
     // CHECK FOR WIN AFTER 5 TURNS
     const checkForWin = () => {
+
+
         for (winType in wins) {
             let typeName = '';
 
@@ -192,32 +178,38 @@ const Rule = (onePlayerObject, anotherPlayerObject, testBoard) => {
 
                     if ((testBoard.getValueAt(wins[winType][i][j][0], wins[winType][i][j][1]) == currentSymbol)) {
                         matchCount++;
+                        if (matchCount == 3) {
+                            // console.log('----------WIN FOUND----------');
+                            console.log(currentPlayer + ' WINS');
+                            winState = true;
+                            // return;
+                            // return true;
+                        } else if (winState == false && testBoard.getTurnCount() == 9) {
+                            console.log('DRAW');
+                            return;
+                            // return false;
+                        }
+
                     }
                     if (matchCount > 0) {
                         // console.log(typeName + ' MATCHING WIN POSITIONS OF PATTERN ' + i + ' ARE: ' + matchCount);
                     }
-                    if (matchCount == 3) {
-                        // console.log('----------WIN FOUND----------');
-                        console.log(currentPlayer + ' WINS');
-                        return true;
-                    }
-                    if (matchCount != 3 && testBoard.getTurnCount() == 9) {
-                        console.log('DRAW');
-                        return false;
-                    }
+
 
                 }
             }
         }
-
     }
-
+    const getWinState = () => winState;
+    const resetWinState=()=>winState=false;
     return {
         currentTurn,
         getCurrentPlayer,
         getCurrentSymbol,
         switchTurn,
-        checkForWin
+        checkForWin,
+        getWinState,
+        resetWinState
     };
 }
 
@@ -259,15 +251,16 @@ const gameBoard = () => {
 
     const getTurnCount = () => turnCount;
 
-    const clearBoard=()=>{
+    const clearBoard = () => {
         for (i = 0; i < rows; i++) {
             board[i] = [];
             for (j = 0; j < columns; j++) {
                 board[i].push(0);
             }
         }
-        turnCount=0;
+        turnCount = 0;
     }
+
     return {
         getBoard,
         markBoard,
@@ -279,12 +272,17 @@ const gameBoard = () => {
 }
 
 const Game = () => {
-    // let players = []; //NOT DEFINED IN RULE AND GAME
+
+
 
     p1 = Player('player1', 'x');
     p2 = Player('player2', 'o');
 
-    // players.push(p1, p2);
+    let onePlayerScore = 0;
+    let anotherPlayerScore = 0;
+
+    const scores = () => [onePlayerScore, anotherPlayerScore];
+
 
     let testBoard = gameBoard(); //DEFINE THE BOARD
     let testRule = Rule(p1, p2, testBoard); //DEFINE THE RULES
@@ -309,25 +307,55 @@ const Game = () => {
 
         if (testBoard.getTurnCount() >= 5) {
             testRule.checkForWin();
+            if (testRule.getWinState() == true) {
 
-            if (testRule.checkForWin() == true)
+
+                if (testRule.getCurrentSymbol() == 'x') {
+                    onePlayerScore++;
+                    // console.log('p1 score: '+onePlayerScore)
+                    // INCREASE PLAYER 1 SCORE
+                } else if (testRule.getCurrentSymbol() == 'o') {
+                    anotherPlayerScore++;
+                    // INCREASE PLAYER 2 SCORE
+                }
                 return;
-            if (testRule.checkForWin() == false)
+            }
+            if (testBoard.getTurnCount() == 9) {
                 return;
+            }
         }
-
+        // if(testBoard.getTurnCount() == 9){
+        //     return;
+        // }
         testRule.switchTurn();
         testRule.currentTurn();
 
     }
+    const resetGame = () => {
+        // CALLS A CLEARBOARD FUNCTION FROM BOARD OBJECT
+        testBoard.clearBoard();
+        // RESET WINSTATE
+        testRule.resetWinState();
+        // RESET PLAYER SCORES
+        onePlayerScore = 0;
+        anotherPlayerScore = 0;
+    }
+    const playAgain = () => {
+        // CALLS A CLEARBOARD FUNCTION FROM BOARD OBJECT
+        testBoard.clearBoard();
+        // RESET WINSTATE
+        testRule.resetWinState();
+    }
     return {
         playRound,
+        resetGame,
+        playAgain,
+        scores,
+
         currentTurn: testRule.currentTurn, //might not need this
         getCurrentPlayer: testRule.getCurrentPlayer,
         getCurrentSymbol: testRule.getCurrentSymbol,
         getBoard: testBoard.getBoard,
-        clearBoard: testBoard.clearBoard
-
     };
 
 }
@@ -343,6 +371,17 @@ const displayScreen = () => {
 
     const currentPlayer = testGame.getCurrentPlayer();
     currentSymbol = testGame.getCurrentSymbol();
+
+
+    const playerOneDiv = document.querySelector('.player-one-score');
+    const playerTwoDiv = document.querySelector('.player-two-score');
+
+
+    // playerOneDiv.textContent=testGame.scores[0];
+    // playerTwoDiv.textContent=testGame.scores[1];
+
+
+
     // Lets just create our board first
 
     for (i = 0; i < 3; i++) {
@@ -374,20 +413,32 @@ const displayScreen = () => {
                 rowIndex = button.classList[1].substring(4, 5); //EXTRACT ROW INDEX NUMBER
                 colIndex = button.classList[2].substring(7, 8); //EXTRACT COLUMN INDEX NUMBER
 
+
+                
                 writeBoard(rowIndex, colIndex);
                 testGame.playRound(rowIndex, colIndex);
-            }
-            else if(button.classList.contains('reset')){
+                // PLACE THE SCOREBOARD HERE
+                playerOneDiv.textContent = testGame.scores()[0];
+                playerTwoDiv.textContent = testGame.scores()[1];
+                // console.log('p1 score '+testGame.scores[0]);
+            } else if (button.classList.contains('reset')) {
                 console.log('RESET GAME');
-                testGame.clearBoard();
-                allCells=document.querySelectorAll('.cell');
-                allCells.forEach(cell=>{
-                    cell.textContent='';
+                testGame.resetGame();
+                playerOneDiv.textContent = testGame.scores()[0];
+                playerTwoDiv.textContent = testGame.scores()[1];
+
+                allCells = document.querySelectorAll('.cell');
+                allCells.forEach(cell => {
+                    cell.textContent = '';
                 })
-                
-            }
-            else if(button.classList.contains('new')){
-                console.log('NEW GAME');
+
+            } else if (button.classList.contains('new')) {
+                console.log('PLAY AGAIN');
+                testGame.playAgain();
+                allCells = document.querySelectorAll('.cell');
+                allCells.forEach(cell => {
+                    cell.textContent = '';
+                })
             }
             // TARGETING RESET GAME
         })
